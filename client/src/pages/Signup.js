@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function Signup() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const { dispatch } = useAuthContext();
+
+    const navigate = useNavigate();
     
     const signUp = (email, password) => {
         const user = { email, password };
@@ -26,10 +32,17 @@ function Signup() {
                 }
             }
             console.log('User signed up successfully!');
+
             return res.json();
         })
         .then((data) => {
-            console.log(data);
+            localStorage.setItem('user', JSON.stringify(data));
+
+            // update AuthContext
+            dispatch({ type: "LOGIN", payload: data });
+
+            // redirect to home
+            navigate('/');
         })
         .catch((error) => {
             console.error(error.message);

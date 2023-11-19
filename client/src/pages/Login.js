@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+
+    const { dispatch } = useAuthContext();
+
+    const navigate = useNavigate();
+
     const login = (email, password) => {
         const user = { email, password };
 
@@ -25,11 +31,17 @@ function Login() {
                     throw new Error(`HTTP error! Status: ${res.status}`);
                 }
             }
-            console.log('User signed up successfully!');
+            console.log('User logged in successfully!');
             return res.json();
         })
         .then((data) => {
-            console.log(data);
+            localStorage.setItem('user', JSON.stringify(data));
+
+            // update AuthContext
+            dispatch({ type: "LOGIN", payload: data });
+
+            // redirect to home
+            navigate('/');
         })
         .catch((error) => {
             console.error(error.message);

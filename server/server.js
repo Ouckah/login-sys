@@ -2,6 +2,7 @@ const express = require("express")
 
 const dotenv = require("dotenv")
 const mongoose = require("mongoose")
+const cors = require('cors')
 
 // route imports
 const authRoutes = require("./routes/auth")
@@ -9,6 +10,9 @@ const authRoutes = require("./routes/auth")
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 4000
+
+// cors
+app.use(cors())
 
 // database
 mongoose.connect(process.env.DB_CONNECT)

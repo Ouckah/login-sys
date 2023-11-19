@@ -6,10 +6,14 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
+// components
+import Navbar from './components/Navbar';
+
 function App() {
   return (
     <Router>
-      <div>
+      <div className='flex flex-col w-screen h-screen'>
+        <Navbar />
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/login" element={<Login />} />

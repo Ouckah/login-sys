@@ -9,7 +9,7 @@ const Navbar = ({  }) => {
         <>
         
             <div className="flex flex-row justify-between items-center w-full h-16 px-12 bg-gray-900">
-                <h1 className="text-white">Zookuk like butt</h1>
+                <h1 className="text-white">Vote Now</h1>
                 <div className="flex flex-row gap-5">
 
                     {!user &&

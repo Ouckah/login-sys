@@ -33,8 +33,8 @@ const createPoll = async (req, res) => {
     try {
         const poll = await Poll.create({ 
             content, 
-            likes: 0, 
-            dislikes: 0 
+            likes: [], 
+            dislikes: [] 
         })
         res.status(200).json(poll)
     } catch (error) {

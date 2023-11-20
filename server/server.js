@@ -6,6 +6,7 @@ const cors = require('cors')
 
 // route imports
 const authRoutes = require("./routes/auth")
+const pollRoutes = require('./routes/polls')
 
 dotenv.config()
 const app = express()
@@ -22,6 +23,7 @@ mongoose.connect(process.env.DB_CONNECT)
 app.use(express.json())
 
 // routes
-app.use("/api/user", authRoutes)
+app.use('/api/user', authRoutes)
+app.use('/api/poll', pollRoutes)
 
 app.listen(PORT, () => console.log("Server is running."))

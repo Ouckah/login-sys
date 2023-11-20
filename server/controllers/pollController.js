@@ -1,4 +1,5 @@
 const Poll = require('../models/pollModel')
+const User = require('../models/userModel')
 const mongoose = require('mongoose')
 
 // GET all polls
@@ -78,44 +79,156 @@ const updatePoll = async (req, res) => {
     res.status(200).json(poll)
 }
 
-// UPDATE likes on a poll
+// INCREMENT likes on a poll
 const likePoll = async (req, res) => {
     const { id } = req.params
+    const { user_id } = req.body
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'No such Poll.'})
     }
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(404).json({error: 'No such User.'})
+    }
 
-    const poll = await Poll.findOneAndUpdate({ _id: id }, 
-        { $inc: { likes: 1 } },
-        { new: true }
-    )
+    const user = await User.findById({ _id: user_id })
+
+    if (!user) {
+        return res.status(404).json({ error: 'Invalid user.' })
+    }
+
+    const poll = await Poll.findOne({ _id: id })
 
     if (!poll) {
         return res.status(404).json({error: 'No such Poll.'})
     }
 
-    res.status(200).json(poll)
+    // check if user_id is already in the dislikes array
+    if (poll.likes.includes(user_id)) {
+        return res.status(400).json({ error: 'User already liked this poll.' });
+    }
+
+    // if not, push user_id to dislikes array
+    poll.likes.push(user_id);
+
+    // save the updated poll
+    await poll.save();
+
+    res.status(200).json(poll);
 }
 
-// UPDATE dislikes on a poll
-const dislikePoll = async (req, res) => {
+// DECREMENT likes on a poll
+const unlikePoll = async (req, res) => {
     const { id } = req.params
+    const { user_id } = req.body
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error: 'No such Poll.'})
     }
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(404).json({error: 'No such User.'})
+    }
 
-    const poll = await Poll.findOneAndUpdate({ _id: id }, 
-        { $inc: { dislikes: 1 } },
-        { new: true }
-    )
+    const user = await User.findById({ _id: user_id })
+
+    if (!user) {
+        return res.status(404).json({ error: 'Invalid user.' })
+    }
+
+    const poll = await Poll.findOne({ _id: id })
 
     if (!poll) {
         return res.status(404).json({error: 'No such Poll.'})
     }
 
-    res.status(200).json(poll)
+    // check if user_id is not already in the likes array
+    if (!poll.likes.includes(user_id)) {
+        return res.status(400).json({ error: 'User has not liked this poll.' });
+    }
+
+    // if it is, pull user_id from dislikes array
+    poll.likes = poll.likes.filter((u_id) => u_id !== user_id)
+
+    // save the updated poll
+    await poll.save();
+
+    res.status(200).json(poll);
+}
+
+// INCREMENT dislikes on a poll
+const dislikePoll = async (req, res) => {
+    const { id } = req.params
+    const { user_id } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({error: 'No such Poll.'})
+    }
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(404).json({error: 'No such User.'})
+    }
+
+    const user = await User.findById({ _id: user_id })
+
+    if (!user) {
+        return res.status(404).json({ error: 'Invalid user.' })
+    }
+
+    const poll = await Poll.findOne({ _id: id })
+
+    if (!poll) {
+        return res.status(404).json({error: 'No such Poll.'})
+    }
+
+    // check if user_id is already in the dislikes array
+    if (poll.dislikes.includes(user_id)) {
+        return res.status(400).json({ error: 'User already disliked this poll.' });
+    }
+
+    // if not, push user_id to dislikes array
+    poll.dislikes.push(user_id);
+
+    // save the updated poll
+    await poll.save();
+
+    res.status(200).json(poll);
+}
+
+// DECREMENT dislikes on a poll
+const undislikePoll = async (req, res) => {
+    const { id } = req.params
+    const { user_id } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({error: 'No such Poll.'})
+    }
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(404).json({error: 'No such User.'})
+    }
+
+    const user = await User.findById({ _id: user_id })
+
+    if (!user) {
+        return res.status(404).json({ error: 'Invalid user.' })
+    }
+
+    const poll = await Poll.findOne({ _id: id })
+
+    if (!poll) {
+        return res.status(404).json({error: 'No such Poll.'})
+    }
+
+    // check if user_id is not already in the dislikes array
+    if (!poll.dislikes.includes(user_id)) {
+        return res.status(400).json({ error: 'User has not disliked this poll.' });
+    }
+
+    // if it does, pull user_id from dislikes array
+    poll.dislikes = poll.dislikes.filter((u_id) => u_id !== user_id)
+
+    // save the updated poll
+    await poll.save();
+
+    res.status(200).json(poll);
 }
 
 module.exports = {
@@ -125,5 +238,7 @@ module.exports = {
     deletePoll,
     updatePoll,
     likePoll,
-    dislikePoll
+    unlikePoll,
+    dislikePoll,
+    undislikePoll
 }

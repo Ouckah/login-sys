@@ -8,11 +8,11 @@ const pollSchema = new Schema({
     required: true
   },
   likes: {
-    type: Number,
+    type: [String],
     required: true
   },
   dislikes: {
-    type: Number,
+    type: [String],
     required: true
   }
 }, { timestamps: true })

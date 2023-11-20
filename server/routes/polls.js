@@ -6,7 +6,9 @@ const {
     deletePoll,
     updatePoll,
     likePoll,
-    dislikePoll
+    unlikePoll,
+    dislikePoll,
+    undislikePoll
 } = require('../controllers/pollController')
 
 const router = express.Router()
@@ -29,7 +31,13 @@ router.patch('/:id', updatePoll)
 // LIKE a poll
 router.patch('/like/:id', likePoll)
 
+// UNLIKE a poll
+router.patch('/unlike/:id', unlikePoll)
+
 // DISLIKE a poll
 router.patch('/dislike/:id', dislikePoll)
+
+// UNDISLIKE a poll
+router.patch('/undislike/:id', undislikePoll)
 
 module.exports = router;

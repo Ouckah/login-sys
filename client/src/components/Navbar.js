@@ -9,7 +9,12 @@ const Navbar = ({  }) => {
         <>
         
             <div className="flex flex-row justify-between items-center w-full h-16 px-12 bg-gray-900">
-                <h1 className="text-white">Vote Now</h1>
+                <button 
+                    className="px-8 py-2"
+                    onClick={() => navigate('/')}
+                >
+                    <h1 className="text-white">Vote Now</h1>
+                </button>
                 <div className="flex flex-row gap-5">
 
                     {!user &&
